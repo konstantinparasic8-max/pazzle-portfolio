@@ -1,0 +1,36 @@
+ДЗ-2 04.12.2025
+//int n = 0;
+//if (n > 0) {
+//    Console.WriteLine("число положительное");
+//}else if (n < 0){
+//   Console.WriteLine("число отрицательное");
+//}else if (n == 0){
+//    Console.WriteLine("Число равно 0");
+//
+//}
+
+//Console.WriteLine();
+//int age = int.Parse(Console.ReadLine());
+//if (age >= 18){
+//    Console.WriteLine("Вы совершеннолетний");
+//
+//}
+//else
+//{
+//   Console.WriteLine("Вы несовершеннолетний");
+//}
+
+int a = 5, b = 2;
+if (a > 0 && b > 0)
+{
+    Console.WriteLine("Оба числа положительные");
+}
+else if (a > 0 || b > 0)
+{
+    Console.WriteLine("Хотя бы одно число положительное");
+}
+
+if (a <= 0)
+{
+    Console.WriteLine("a не положительное");
+}

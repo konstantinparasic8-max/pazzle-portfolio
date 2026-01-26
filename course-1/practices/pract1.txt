@@ -1,0 +1,45 @@
+практика 22.01.2026
+
+
+
+Animal[] animals =
+{
+    new Dog(),
+    new Cow(),
+    new Cat()
+};
+foreach (var animal in animals) { animal.Voice(); }
+
+
+public class Animal
+{
+    public virtual void Voice()
+    {
+        Console.WriteLine($"Животное издает звук");
+    }
+}
+
+public class Dog: Animal
+{
+    public override void Voice()
+    {
+        Console.WriteLine($"Собака лает");
+    }
+}
+
+public class Cat: Animal
+{
+    public override void Voice()
+    {
+        Console.WriteLine($"Кошка мяукает");
+    }
+
+}
+public class Cow : Animal
+{
+    public override void Voice()
+    {
+        Console.WriteLine($"Корова говорит муууу");
+    }
+
+}

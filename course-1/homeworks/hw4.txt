@@ -1,0 +1,92 @@
+ДЗ 22.01.2026
+
+Car[] transports =
+            {
+                new Car("Toyota"),
+                new Car("BMW")
+            };
+
+int[] Accelerate = { 60, 120 };
+int i = 0;
+
+foreach (var car in transports)
+{
+    
+    car.Move();
+    car.Accelerate(Accelerate[i]);
+    car.ShowInfo();
+}
+Bicycle[] bicycles =
+            {
+                new Bicycle("Stels Navigator"),
+                new Bicycle("BMX")
+};
+foreach (var bike in bicycles)
+{
+    
+    bike.Move();
+    bike.Pedal();
+    bike.ShowInfo();
+}
+
+public class Transport
+{
+    public string Model { get; set; }
+    protected int Speed = 0;
+    public void ShowInfo()
+    {
+        Console.WriteLine($"Модель: {Model}, Скорость:{Speed} ");
+    }
+    public virtual void Move()
+    {
+        Console.WriteLine($"Транспорт движется");
+    }
+}
+
+public class Car : Transport
+{
+    public Car(string model) 
+    {
+        Model = model;
+    }
+    public override void Move()
+    {
+        Console.WriteLine("Машина едет по дороге");
+    }
+    public void Accelerate(int value)
+    {
+        if (value < 0)
+        {
+            Console.WriteLine("Скорость не может быть отрицательной");
+            return;
+        }
+        int Speed1 = Speed + value;
+        if (Speed1 > 200)
+        {
+            Console.WriteLine("Скорость слтшком высокая");
+        }
+        else
+        {
+            Console.WriteLine($"Скорость увеличена до {Speed1} км/ч");
+        }
+
+    }
+}
+
+
+public class Bicycle: Transport
+{
+    public Bicycle(string model)
+    {
+        Model = model;
+    }
+    public void Pedal()
+    {
+       Speed =+ 5;
+    }
+    public override void Move()
+    {
+        Console.WriteLine($"Велосипел крутит педали, Скорость:{Speed}");
+    }
+}
+

@@ -1,0 +1,472 @@
+03.02.2026
+
+public class Publishing
+{
+    public string Name { get; set; }
+
+    public Publishing(string name)
+    {
+        if (name == null)
+        {
+            Name = "Неизвестное издательство";
+        }
+        else
+        {
+            Name = name;
+        }
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine("Издательство: " + Name);
+    }
+}
+
+public abstract class Publication
+{
+    public abstract string GetInfo();
+}
+
+public class Book : Publication
+{
+    private string _name;
+    private string _author;
+    private int _year;
+    private int _pages;
+
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                _name = "Без названия";
+            }
+            else
+            {
+                _name = value;
+            }
+        }
+    }
+
+    public string Author
+    {
+        get
+        {
+            return _author;
+        }
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                _author = "Неизвестный автор";
+            }
+            else
+            {
+                _author = value;
+            }
+        }
+    }
+
+    public int Year
+    {
+        get{return _year; }
+        set
+        {
+            if (value < 0)
+            {
+                _year = 0;
+            }
+            else if (value > DateTime.Now.Year + 1)
+            {
+                _year = DateTime.Now.Year;
+            }
+            else
+            {
+                _year = value;
+            }
+        }
+    }
+
+    public int Pages
+    {
+        get{return _pages;}
+        set
+        {
+            if (value <= 0)
+            {
+                _pages = 1;
+            }
+            else
+            {
+                _pages = value;
+            }
+        }
+    }
+
+    public Publishing Publishing { get; set; }
+
+    public Book()
+    {
+        Name = "Без названия";
+        Author = "Неизвестный автор";
+        Year = DateTime.Now.Year;
+        Pages = 1;
+        Publishing = new Publishing("Неизвестное издательство");
+    }
+
+    public Book(string name, string author, int year, int pages, Publishing publishing)
+    {
+        Name = name;
+        Author = author;
+        Year = year;
+        Pages = pages;
+
+        if (publishing == null)
+        {
+            Publishing = new Publishing("Неизвестное издательство");
+        }
+        else
+        {
+            Publishing = publishing;
+        }
+    }
+
+    public virtual void PrintInfo()
+    {
+        Console.WriteLine("Книга: " + Name + ", Автор: " + Author);
+        Console.WriteLine("Год: " + Year + ", Страниц: " + Pages);
+
+        if (Publishing != null)
+        {
+            Publishing.PrintInfo();
+        }
+    }
+
+    public override string GetInfo()
+    {
+        return "Книга: " + Name + ", Автор: " + Author + ", Год: " + Year + ", Страниц: " + Pages;
+    }
+}
+
+public class Textbook : Book
+{
+    public string Subject { get; set; }
+
+    public Textbook(string name, string author, int year, int pages, Publishing publishing, string subject)
+        : base(name, author, year, pages, publishing)
+    {
+        if (subject == null)
+        {
+            Subject = "Без предмета";
+        }
+        else
+        {
+            Subject = subject;
+        }
+    }
+
+    public override void PrintInfo()
+    {
+        base.PrintInfo();
+        Console.WriteLine("Предмет: " + Subject + " (Учебник)");
+    }
+
+    public override string GetInfo()
+    {
+        return base.GetInfo() + ", Предмет: " + Subject;
+    }
+}
+
+public class FictionBook : Book
+{
+    public string Genre { get; set; }
+
+    public FictionBook(string name, string author, int year, int pages, Publishing publishing, string genre)
+        : base(name, author, year, pages, publishing)
+    {
+        if (genre == null)
+        {
+            Genre = "Без жанра";
+        }
+        else
+        {
+            Genre = genre;
+        }
+    }
+
+    public override void PrintInfo()
+    {
+        base.PrintInfo();
+        Console.WriteLine("Жанр: " + Genre + " (Худ. книга)");
+    }
+
+    public override string GetInfo()
+    {
+        return base.GetInfo() + ", Жанр: " + Genre;
+    }
+}
+
+public class Reader
+{
+    public string Name { get; set; }
+    public int ID { get; set; }
+    public List<Book> BorrowedBooks { get; private set; }
+
+    public Reader(string name, int id)
+    {
+        if (name == null)
+        {
+            Name = "Безымянный читатель";
+        }
+        else
+        {
+            Name = name;
+        }
+
+        ID = id;
+        BorrowedBooks = new List<Book>();
+    }
+
+    public void TakeBook(Book book)
+    {
+        if (book == null)
+        {
+            Console.WriteLine(Name + ": Нельзя взять несуществующую книгу");
+            return;
+        }
+
+        BorrowedBooks.Add(book);
+        Console.WriteLine(Name + " взял: " + book.Name);
+    }
+
+    public void ReturnBook(Book book)
+    {
+        if (book == null)
+        {
+            Console.WriteLine(Name + ": Нельзя вернуть несуществующую книгу");
+            return;
+        }
+
+        if (BorrowedBooks.Contains(book))
+        {
+            BorrowedBooks.Remove(book);
+            Console.WriteLine(Name + " вернул: " + book.Name);
+        }
+        else
+        {
+            Console.WriteLine(Name + " не имеет книги: " + book.Name);
+        }
+    }
+
+    public void ShowBooks()
+    {
+        string bookNames = "";
+
+        if (BorrowedBooks.Count > 0)
+        {
+            for (int i = 0; i < BorrowedBooks.Count; i++)
+            {
+                if (i > 0)
+                {
+                    bookNames += ", ";
+                }
+                bookNames += BorrowedBooks[i].Name;
+            }
+        }
+
+        Console.WriteLine(Name + ": " + bookNames);
+    }
+}
+
+public interface ILibraryManagement
+{
+    void AddBook(Book book);
+    void RemoveBook(Book book);
+    List<Book> FindBook(string name);
+    void PrintBooks();
+    void IssueBook(Book book, Reader reader);
+}
+
+public class Library : ILibraryManagement
+{
+    private List<Book> books;
+    public string Name { get; set; }
+
+    public Library(string name)
+    {
+        if (name == null)
+        {
+            Name = "Библиотека без названия";
+        }
+        else
+        {
+            Name = name;
+        }
+
+        books = new List<Book>();
+    }
+
+    public void AddBook(Book book)
+    {
+        if (book == null)
+        {
+            Console.WriteLine("Нельзя добавить несуществующую книгу");
+            return;
+        }
+
+        books.Add(book);
+        Console.WriteLine("Добавлена: " + book.Name);
+    }
+
+    public void RemoveBook(Book book)
+    {
+        if (book == null)
+        {
+            Console.WriteLine("Нельзя удалить несуществующую книгу");
+            return;
+        }
+
+        if (books.Contains(book))
+        {
+            books.Remove(book);
+            Console.WriteLine("Удалена: " + book.Name);
+        }
+        else
+        {
+            Console.WriteLine("Книга '" + book.Name + "' не найдена в библиотеке");
+        }
+    }
+
+    public List<Book> FindBook(string name)
+    {
+        List<Book> result = new List<Book>();
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return result;
+        }
+
+        foreach (var book in books)
+        {
+            if (book.Name.Contains(name))
+            {
+                result.Add(book);
+            }
+        }
+
+        return result;
+    }
+
+    public void PrintBooks()
+    {
+        Console.WriteLine("\nБиблиотека '" + Name + "' (" + books.Count + " книг):");
+
+        if (books.Count == 0)
+        {
+            Console.WriteLine("  Библиотека пуста");
+        }
+        else
+        {
+            foreach (var book in books)
+            {
+                Console.WriteLine("  " + book.GetInfo());
+            }
+        }
+    }
+
+    public void IssueBook(Book book, Reader reader)
+    {
+        if (book == null || reader == null)
+        {
+            Console.WriteLine("Ошибка выдачи книги: не указана книга или читатель");
+            return;
+        }
+
+        if (books.Contains(book))
+        {
+            reader.TakeBook(book);
+        }
+        else
+        {
+            Console.WriteLine("Книга '" + book.Name + "' не найдена в библиотеке");
+        }
+    }
+
+    public void Stats()
+    {
+        int textbooks = 0;
+        int fictionBooks = 0;
+
+        foreach (var book in books)
+        {
+            if (book is Textbook)
+            {
+                textbooks++;
+            }
+            else if (book is FictionBook)
+            {
+                fictionBooks++;
+            }
+        }
+
+        Console.WriteLine("Книг: " + books.Count + ", Учебников: " + textbooks + ", Худ.книг: " + fictionBooks);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+ 
+
+        var publ1 = new Publishing("Просвещение");
+        var publ2 = new Publishing("Эксмо");
+
+        var textbook = new Textbook("Алгебра", "Иванов", 2020, 300, publ1, "Математика");
+        var fiction = new FictionBook("Преступление и наказание", "Достоевский", 1866, 500, publ2, "Роман");
+        var book = new Book("C# для начинающих", "Сидоров", 2022, 400, publ2);
+
+        var library = new Library("Городская библиотека");
+
+        library.AddBook(textbook);
+        library.AddBook(fiction);
+        library.AddBook(book);
+
+        library.PrintBooks();
+
+        var reader = new Reader("Анна", 1);
+
+        Console.WriteLine("Выдача книг");
+        library.IssueBook(textbook, reader);
+        library.IssueBook(fiction, reader);
+
+        reader.ShowBooks();
+
+        Console.WriteLine("Поиск книг");
+        var found = library.FindBook("Алгебра");
+
+        if (found.Count > 0)
+        {
+            foreach (var foundBook in found)
+            {
+                foundBook.PrintInfo();
+            }
+        }
+        else
+        {
+            Console.WriteLine("Книги не найдены");
+        }
+
+        Console.WriteLine("Информация о публикациях");
+        Publication publication = textbook;
+        Console.WriteLine(publication.GetInfo());
+
+        library.Stats();
+
+    }
+}
